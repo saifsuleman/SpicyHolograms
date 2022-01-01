@@ -62,8 +62,6 @@ public final class MyPlugin extends JavaPlugin {
                     );
                 }
         );
-
-        this.getServer().getScheduler().runTaskTimerAsynchronously(this, dynamicHologram::update, 10, 10);
     }
 }
 ```

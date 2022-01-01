@@ -8,6 +8,9 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -18,7 +21,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
 
-public class HologramsManager implements AutoCloseable {
+public class HologramsManager implements AutoCloseable, Listener {
     private final Map<String, Hologram> holograms;
     private final BukkitRunnable runnable;
     private final ExecutorService executor;
@@ -39,11 +42,17 @@ public class HologramsManager implements AutoCloseable {
 
                         hologram.subscribeAll(subscribers);
                         hologram.unsubscribeAll(unsubscribers);
+
+                        if (hologram instanceof DynamicHologram) {
+                            ((DynamicHologram) hologram).update();
+                        }
                     });
                 }
             }
         };
         this.runnable.runTaskTimerAsynchronously(plugin, 0, 2);
+
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     public DynamicHologram createHologram(String id, Location location, Function<Player, List<Component>> function) {
@@ -94,6 +103,14 @@ public class HologramsManager implements AutoCloseable {
         for (Map.Entry<String, Hologram> entry : this.holograms.entrySet()) {
             SpicyHolograms.getInstance().getLogger().info("Unloading Hologram: " + entry.getKey());
             entry.getValue().close();
+        }
+    }
+
+    @EventHandler
+    public void onPlayerDisconnect(PlayerQuitEvent e) {
+        Player player = e.getPlayer();
+        for (Hologram hologram : this.holograms.values()) {
+            hologram.unsubscribe(player);
         }
     }
 }

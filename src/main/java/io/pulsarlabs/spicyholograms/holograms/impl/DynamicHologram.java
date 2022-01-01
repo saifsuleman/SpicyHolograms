@@ -44,6 +44,8 @@ public class DynamicHologram implements Hologram {
             for (HologramLine line : this.lines.get(player)) {
                 PacketUtil.send(player, line.createDestroyPacket());
             }
+
+            this.lines.remove(player);
         }
     }
 
