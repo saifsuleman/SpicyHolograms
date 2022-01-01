@@ -2,6 +2,8 @@ package io.pulsarlabs.spicyholograms.holograms;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.pulsarlabs.spicyholograms.SpicyHolograms;
+import io.pulsarlabs.spicyholograms.holograms.impl.DynamicHologram;
+import io.pulsarlabs.spicyholograms.holograms.impl.StaticHologram;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -14,6 +16,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Function;
 
 public class HologramsManager implements AutoCloseable {
     private final Map<String, Hologram> holograms;
@@ -43,11 +46,16 @@ public class HologramsManager implements AutoCloseable {
         this.runnable.runTaskTimerAsynchronously(plugin, 0, 2);
     }
 
-    public Hologram createHologram(String id, Location location, List<Component> lines) {
-        if (this.holograms.containsKey(id)) {
-            throw new IllegalArgumentException("There already exists hologram with id: " + id + "! Remove that one first!");
-        }
-        Hologram hologram = new Hologram(location, lines, 0.25);
+    public DynamicHologram createDynamicHologram(String id, Location location, Function<Player, List<Component>> function) {
+        if (this.holograms.containsKey(id)) removeHologram(id);
+        DynamicHologram hologram = new DynamicHologram(location, 0.25, function);
+        this.holograms.put(id, hologram);
+        return hologram;
+    }
+
+    public StaticHologram createHologram(String id, Location location, List<Component> lines) {
+        if (this.holograms.containsKey(id)) removeHologram(id);
+        StaticHologram hologram = new StaticHologram(location, lines, 0.25);
         this.holograms.put(id, hologram);
         return hologram;
     }
@@ -60,13 +68,13 @@ public class HologramsManager implements AutoCloseable {
         return hologram != null;
     }
 
-    public String removeHologram(Hologram hologram) {
+    public String removeHologram(StaticHologram hologram) {
         String id = getHologramId(hologram);
         if (id != null) removeHologram(id);
         return id;
     }
 
-    public String getHologramId(Hologram hologram) {
+    public String getHologramId(StaticHologram hologram) {
         for (Map.Entry<String, Hologram> entry : this.holograms.entrySet()) {
             if (entry.getValue().equals(hologram)) {
                 return entry.getKey();
