@@ -68,13 +68,13 @@ public class HologramsManager implements AutoCloseable {
         return hologram != null;
     }
 
-    public String removeHologram(StaticHologram hologram) {
+    public String removeHologram(Hologram hologram) {
         String id = getHologramId(hologram);
         if (id != null) removeHologram(id);
         return id;
     }
 
-    public String getHologramId(StaticHologram hologram) {
+    public String getHologramId(Hologram hologram) {
         for (Map.Entry<String, Hologram> entry : this.holograms.entrySet()) {
             if (entry.getValue().equals(hologram)) {
                 return entry.getKey();
