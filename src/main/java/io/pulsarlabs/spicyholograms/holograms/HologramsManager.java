@@ -46,7 +46,7 @@ public class HologramsManager implements AutoCloseable {
         this.runnable.runTaskTimerAsynchronously(plugin, 0, 2);
     }
 
-    public DynamicHologram createDynamicHologram(String id, Location location, Function<Player, List<Component>> function) {
+    public DynamicHologram createHologram(String id, Location location, Function<Player, List<Component>> function) {
         if (this.holograms.containsKey(id)) removeHologram(id);
         DynamicHologram hologram = new DynamicHologram(location, 0.25, function);
         this.holograms.put(id, hologram);

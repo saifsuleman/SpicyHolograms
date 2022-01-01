@@ -51,7 +51,7 @@ public final class MyPlugin extends JavaPlugin {
         Location location = new Location(Bukkit.getWorld("world"), 270, 80, 5);
         hologramsManager.createHologram("myStaticHologram", location, lines);
 
-        DynamicHologram dynamicHologram = hologramsManager.createDynamicHologram("myDynamicHologram",
+        DynamicHologram dynamicHologram = hologramsManager.createHologram("myDynamicHologram",
                 new Location(Bukkit.getWorld("world"), 270, 80, 10), player -> {
                     String name = player.getName();
                     boolean op = player.isOp();
