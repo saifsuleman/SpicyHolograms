@@ -18,23 +18,16 @@ public class Hologram {
     private final Set<Player> hiding;
     private final List<HologramLine> lines;
     private final double spacing;
-    private final boolean persist;
     private Location location;
 
-    public Hologram(Location location, List<Component> lines, double spacing, boolean persist) {
+    public Hologram(Location location, List<Component> lines, double spacing) {
         this.location = location;
         this.spacing = spacing;
-        this.persist = persist;
         this.lines = new ArrayList<>();
         this.hiding = ConcurrentHashMap.newKeySet();
         this.viewers = ConcurrentHashMap.newKeySet();
 
         this.lines(lines);
-    }
-
-    public void save() {
-        HologramsManager manager = SpicyHolograms.getInstance().getHologramsManager();
-        if (manager != null && persist) manager.saveHologram(this);
     }
 
     public void subscribe(Player player) {
@@ -94,8 +87,6 @@ public class Hologram {
             PacketUtil.sendAll(this.viewers, line.createTeleportPacket());
         }
 
-        save();
-
         return this;
     }
 
@@ -135,8 +126,6 @@ public class Hologram {
             PacketUtil.sendAll(this.viewers, line.createMetadataPacket());
         }
 
-        save();
-
         return this;
     }
 
@@ -146,9 +135,5 @@ public class Hologram {
 
     public void close() {
         this.unsubscribeAll(this.viewers);
-    }
-
-    public boolean isPersist() {
-        return persist;
     }
 }
