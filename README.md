@@ -49,10 +49,9 @@ public final class MyPlugin extends JavaPlugin {
                 MiniMessage.miniMessage().parse("<gradient:white:blue>Oh yeah this is awesome!")
         );
         Location location = new Location(Bukkit.getWorld("world"), 270, 80, 5);
-        hologramsManager.createHologram("myStaticHologram", location, lines);
+        hologramsManager.createHologram(location, lines);
 
-        DynamicHologram dynamicHologram = hologramsManager.createHologram("myDynamicHologram",
-                new Location(Bukkit.getWorld("world"), 270, 80, 10), player -> {
+        DynamicHologram dynamicHologram = hologramsManager.createHologram(new Location(Bukkit.getWorld("world"), 270, 80, 10), player -> {
                     String name = player.getName();
                     boolean op = player.isOp();
                     return Arrays.asList(

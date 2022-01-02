@@ -5,27 +5,28 @@ import org.bukkit.entity.Player;
 
 import java.util.Collection;
 
-public abstract class Hologram {
-    public abstract void subscribe(Player player);
+public interface Hologram {
+    void subscribe(Player player);
 
-    public abstract void unsubscribe(Player player);
+    void unsubscribe(Player player);
 
-    public abstract void subscribeAll(Collection<Player> players);
-
-    public abstract void unsubscribeAll(Collection<Player> players);
-
-    public abstract void hide(Player player);
-
-    public abstract void show(Player player);
-
-    public abstract Location location();
-
-    public abstract Hologram location(Location location);
-
-    public boolean inRange(Player player) {
-        if (player.getLocation().getWorld() != location().getWorld()) return false;
-        return player.getLocation().distance(location()) < (player.getClientViewDistance() * 16);
+    default void subscribeAll(Collection<Player> players) {
+        players.forEach(this::subscribe);
     }
 
-    public abstract void close();
+    default void unsubscribeAll(Collection<Player> players) {
+        players.forEach(this::unsubscribe);
+    }
+
+    Location location();
+
+    default boolean inRange(Player player) {
+        Location loc = location();
+        if (loc.getWorld() != player.getWorld()) return false;
+        return loc.distance(player.getLocation()) < (player.getClientViewDistance() * 16);
+    }
+
+    void close();
+
+    Collection<Player> getViewers();
 }

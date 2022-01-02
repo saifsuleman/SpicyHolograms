@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class StaticHologram extends Hologram {
+public class StaticHologram implements Hologram {
     private final Set<Player> viewers;
     private final Set<Player> hiding;
     private final List<HologramLine> lines;
@@ -31,7 +31,6 @@ public class StaticHologram extends Hologram {
         this.lines(lines);
     }
 
-    @Override
     public void subscribe(Player player) {
         if (this.hiding.contains(player)) return;
 
@@ -43,26 +42,11 @@ public class StaticHologram extends Hologram {
         }
     }
 
-    @Override
     public void unsubscribe(Player player) {
         if (this.viewers.remove(player)) {
             for (HologramLine line : this.lines) {
                 PacketUtil.send(player, line.createDestroyPacket());
             }
-        }
-    }
-
-    @Override
-    public void subscribeAll(Collection<Player> players) {
-        for (Player player : players) {
-            subscribe(player);
-        }
-    }
-
-    @Override
-    public void unsubscribeAll(Collection<Player> players) {
-        for (Player player : players) {
-            unsubscribe(player);
         }
     }
 
@@ -72,19 +56,16 @@ public class StaticHologram extends Hologram {
         }
     }
 
-    @Override
     public void show(Player player) {
         if (this.hiding.remove(player)) {
             this.subscribe(player);
         }
     }
 
-    @Override
     public Location location() {
         return this.location;
     }
 
-    @Override
     public StaticHologram location(Location location) {
         if (this.location == location) return this;
 
@@ -137,9 +118,12 @@ public class StaticHologram extends Hologram {
         return this;
     }
 
-
-    @Override
     public void close() {
         this.unsubscribeAll(this.viewers);
+    }
+
+    @Override
+    public Collection<Player> getViewers() {
+        return this.viewers;
     }
 }
