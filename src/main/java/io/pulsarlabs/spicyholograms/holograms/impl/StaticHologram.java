@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class StaticHologram implements Hologram {
+public class StaticHologram extends Hologram {
     private final Set<Player> viewers;
     private final Set<Player> hiding;
     private final List<HologramLine> lines;
@@ -137,10 +137,6 @@ public class StaticHologram implements Hologram {
         return this;
     }
 
-    @Override
-    public boolean inRange(Player player) {
-        return player.getLocation().distance(location) < (player.getClientViewDistance() * 16);
-    }
 
     @Override
     public void close() {

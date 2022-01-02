@@ -14,7 +14,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class HologramLine {
-    private static final AtomicInteger ENTITY_ID_GENERATOR = new AtomicInteger(200_000);
+    private static final AtomicInteger ENTITY_ID_GENERATOR = new AtomicInteger(-1);
 
     private static final WrappedDataWatcher.WrappedDataWatcherObject FLAGS = new WrappedDataWatcher.WrappedDataWatcherObject(0, WrappedDataWatcher.Registry.get(Byte.class));
     private static final WrappedDataWatcher.WrappedDataWatcherObject CUSTOM_NAME = new WrappedDataWatcher.WrappedDataWatcherObject(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true));
@@ -27,15 +27,8 @@ public class HologramLine {
     private Location location;
     private Component customName;
 
-    public HologramLine(Location location, Component customName) {
-        this.location = location;
-        this.customName = customName;
-        this.id = ENTITY_ID_GENERATOR.getAndIncrement();
-        this.uuid = UUID.randomUUID();
-    }
-
     private HologramLine() {
-        this.id = ENTITY_ID_GENERATOR.getAndIncrement();
+        this.id = ENTITY_ID_GENERATOR.getAndDecrement();
         this.uuid = UUID.randomUUID();
     }
 

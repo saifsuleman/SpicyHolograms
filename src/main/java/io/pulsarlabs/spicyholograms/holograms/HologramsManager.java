@@ -3,14 +3,13 @@ package io.pulsarlabs.spicyholograms.holograms;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.pulsarlabs.spicyholograms.SpicyHolograms;
 import io.pulsarlabs.spicyholograms.holograms.impl.DynamicHologram;
+import io.pulsarlabs.spicyholograms.holograms.impl.HologramPAPI;
 import io.pulsarlabs.spicyholograms.holograms.impl.StaticHologram;
+import io.pulsarlabs.spicyholograms.holograms.persist.PersistManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -21,15 +20,19 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
 
-public class HologramsManager implements AutoCloseable, Listener {
+public class HologramsManager implements AutoCloseable {
+    private final PersistManager persistManager;
     private final Map<String, Hologram> holograms;
     private final BukkitRunnable runnable;
     private final ExecutorService executor;
 
     public HologramsManager(SpicyHolograms plugin) {
+        this.persistManager = new PersistManager(this, "holograms.yml");
+
         this.holograms = new ConcurrentHashMap<>();
 
         this.executor = Executors.newFixedThreadPool(4, new ThreadFactoryBuilder().setNameFormat("SpicyHolograms Thread [#%d]").build());
+
         this.runnable = new BukkitRunnable() {
             @Override
             public void run() {
@@ -42,17 +45,13 @@ public class HologramsManager implements AutoCloseable, Listener {
 
                         hologram.subscribeAll(subscribers);
                         hologram.unsubscribeAll(unsubscribers);
-
-                        if (hologram instanceof DynamicHologram) {
-                            ((DynamicHologram) hologram).update();
-                        }
                     });
                 }
             }
         };
         this.runnable.runTaskTimerAsynchronously(plugin, 0, 2);
 
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        this.persistManager.load();
     }
 
     public DynamicHologram createHologram(String id, Location location, Function<Player, List<Component>> function) {
@@ -67,6 +66,17 @@ public class HologramsManager implements AutoCloseable, Listener {
         StaticHologram hologram = new StaticHologram(location, lines, 0.25);
         this.holograms.put(id, hologram);
         return hologram;
+    }
+
+    public HologramPAPI createHologramPAPI(String id, Location location, List<String> lines) {
+        if (this.holograms.containsKey(id)) removeHologram(id);
+        HologramPAPI hologram = new HologramPAPI(location, 0.25, lines);
+        this.holograms.put(id, hologram);
+        return hologram;
+    }
+
+    public boolean isHologramActive(Hologram hologram) {
+        return getHologramId(hologram) != null;
     }
 
     public boolean removeHologram(String id) {
@@ -106,11 +116,11 @@ public class HologramsManager implements AutoCloseable, Listener {
         }
     }
 
-    @EventHandler
-    public void onPlayerDisconnect(PlayerQuitEvent e) {
-        Player player = e.getPlayer();
-        for (Hologram hologram : this.holograms.values()) {
-            hologram.unsubscribe(player);
-        }
+    public PersistManager getPersistManager() {
+        return persistManager;
+    }
+
+    public ExecutorService getExecutor() {
+        return executor;
     }
 }

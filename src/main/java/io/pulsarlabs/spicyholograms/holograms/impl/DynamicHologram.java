@@ -1,8 +1,10 @@
 package io.pulsarlabs.spicyholograms.holograms.impl;
 
 import com.comphenix.protocol.events.PacketContainer;
+import io.pulsarlabs.spicyholograms.SpicyHolograms;
 import io.pulsarlabs.spicyholograms.holograms.Hologram;
 import io.pulsarlabs.spicyholograms.holograms.HologramLine;
+import io.pulsarlabs.spicyholograms.holograms.HologramsManager;
 import io.pulsarlabs.spicyholograms.util.PacketUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
@@ -12,12 +14,13 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
-public class DynamicHologram implements Hologram {
+public class DynamicHologram extends Hologram {
     private Function<Player, List<Component>> function;
     private final Set<Player> viewers;
     private final Set<Player> hiding;
     private final Map<Player, List<HologramLine>> lines;
     private final double spacing;
+
     private Location location;
 
     public DynamicHologram(Location location, double spacing, Function<Player, List<Component>> function) {
@@ -27,15 +30,19 @@ public class DynamicHologram implements Hologram {
         this.lines = new ConcurrentHashMap<>();
         this.hiding = ConcurrentHashMap.newKeySet();
         this.viewers = ConcurrentHashMap.newKeySet();
+
+        HologramsManager manager = SpicyHolograms.getInstance().getHologramsManager();
+        manager.getExecutor().submit(() -> {
+            while (manager.isHologramActive(this)) {
+                this.update();
+            }
+        });
     }
 
     @Override
     public void subscribe(Player player) {
         if (this.hiding.contains(player)) return;
-
-        if (this.viewers.add(player)) {
-            update(player);
-        }
+        this.viewers.add(player);
     }
 
     @Override
@@ -100,7 +107,7 @@ public class DynamicHologram implements Hologram {
     }
 
     public void update(Player player) {
-        List<Component> generated = this.function.apply(player);
+        List<Component> generated = this.lines(player);
         List<HologramLine> lines = this.lines.getOrDefault(player, new ArrayList<>());
 
         if (lines.size() > generated.size()) {
@@ -124,6 +131,7 @@ public class DynamicHologram implements Hologram {
                 HologramLine line = HologramLine.create().customName(component).location(loc);
                 lines.add(line);
                 PacketUtil.send(player, line.createSpawnPacket());
+
             }
 
             HologramLine line = lines.get(i).customName(component);
@@ -149,11 +157,6 @@ public class DynamicHologram implements Hologram {
             this.update(player);
         }
         return this;
-    }
-
-    @Override
-    public boolean inRange(Player player) {
-        return player.getLocation().distance(location) < (player.getClientViewDistance() * 16);
     }
 
     @Override
