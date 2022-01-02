@@ -40,16 +40,22 @@ public class HologramsManager implements AutoCloseable {
 
                         hologram.subscribeAll(subscribers);
                         hologram.unsubscribeAll(unsubscribers);
-
-                        if (hologram instanceof DynamicHologram) {
-                            if (hologram.getViewers().size() == 0) return;
-                            ((DynamicHologram) hologram).update();
-                        }
                     });
                 }
             }
         };
         this.runnable.runTaskTimerAsynchronously(plugin, 0, 2);
+
+        executor.execute(() -> {
+            while (!runnable.isCancelled()) {
+                for (Hologram hologram : holograms) {
+                    if (hologram instanceof DynamicHologram) {
+                        if (hologram.getViewers().size() == 0) continue;
+                        ((DynamicHologram) hologram).update();
+                    }
+                }
+            }
+        });
     }
 
     public StaticHologram createHologram(Location location, List<Component> lines) {
@@ -71,6 +77,10 @@ public class HologramsManager implements AutoCloseable {
     public boolean removeHologram(Hologram hologram) {
         hologram.close();
         return this.holograms.remove(hologram);
+    }
+
+    public Set<Hologram> getHolograms() {
+        return holograms;
     }
 
     @Override
