@@ -23,6 +23,7 @@ public abstract class Hologram {
     public abstract Hologram location(Location location);
 
     public boolean inRange(Player player) {
+        if (player.getLocation().getWorld() != location().getWorld()) return false;
         return player.getLocation().distance(location()) < (player.getClientViewDistance() * 16);
     }
 
