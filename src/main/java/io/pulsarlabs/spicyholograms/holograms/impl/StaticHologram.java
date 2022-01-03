@@ -5,6 +5,7 @@ import io.pulsarlabs.spicyholograms.holograms.Hologram;
 import io.pulsarlabs.spicyholograms.holograms.HologramLine;
 import io.pulsarlabs.spicyholograms.util.PacketUtil;
 import net.kyori.adventure.text.Component;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class StaticHologram implements Hologram {
+public class StaticHologram extends Hologram {
     private final Set<Player> viewers;
     private final Set<Player> hiding;
     private final List<HologramLine> lines;
@@ -31,6 +32,7 @@ public class StaticHologram implements Hologram {
         this.lines(lines);
     }
 
+    @Override
     public void subscribe(Player player) {
         if (this.hiding.contains(player)) return;
 
@@ -42,6 +44,7 @@ public class StaticHologram implements Hologram {
         }
     }
 
+    @Override
     public void unsubscribe(Player player) {
         if (this.viewers.remove(player)) {
             for (HologramLine line : this.lines) {
@@ -62,6 +65,7 @@ public class StaticHologram implements Hologram {
         }
     }
 
+    @Override
     public Location location() {
         return this.location;
     }
@@ -118,12 +122,8 @@ public class StaticHologram implements Hologram {
         return this;
     }
 
-    public void close() {
-        this.unsubscribeAll(this.viewers);
-    }
-
     @Override
-    public Collection<Player> getViewers() {
+    public Collection<Player> viewers() {
         return this.viewers;
     }
 }

@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
-public class DynamicHologram implements Hologram {
+public class DynamicHologram extends Hologram {
     private final Map<Player, StaticHologram> holograms;
 
     private Location location;
@@ -68,12 +68,7 @@ public class DynamicHologram implements Hologram {
     }
 
     @Override
-    public void close() {
-        this.unsubscribeAll(holograms.keySet());
-    }
-
-    @Override
-    public Collection<Player> getViewers() {
+    public Collection<Player> viewers() {
         return this.holograms.keySet();
     }
 }

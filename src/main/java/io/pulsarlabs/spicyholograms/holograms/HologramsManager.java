@@ -32,15 +32,13 @@ public class HologramsManager implements AutoCloseable {
             @Override
             public void run() {
                 for (Hologram hologram : holograms) {
-                    executor.execute(() -> {
-                        List<Player> subscribers = new ArrayList<>();
-                        List<Player> unsubscribers = new ArrayList<>();
+                    List<Player> subscribers = new ArrayList<>();
+                    List<Player> unsubscribers = new ArrayList<>();
 
-                        Bukkit.getOnlinePlayers().forEach((player) -> (hologram.inRange(player) ? subscribers : unsubscribers).add(player));
+                    Bukkit.getOnlinePlayers().forEach((player) -> (hologram.inRange(player) ? subscribers : unsubscribers).add(player));
 
-                        hologram.subscribeAll(subscribers);
-                        hologram.unsubscribeAll(unsubscribers);
-                    });
+                    hologram.subscribeAll(subscribers);
+                    hologram.unsubscribeAll(unsubscribers);
                 }
             }
         };
@@ -50,7 +48,7 @@ public class HologramsManager implements AutoCloseable {
             while (!runnable.isCancelled()) {
                 for (Hologram hologram : holograms) {
                     if (hologram instanceof DynamicHologram) {
-                        if (hologram.getViewers().size() == 0) continue;
+                        if (hologram.viewers().size() == 0) continue;
                         ((DynamicHologram) hologram).update();
                     }
                 }
@@ -75,8 +73,9 @@ public class HologramsManager implements AutoCloseable {
     }
 
     public boolean removeHologram(Hologram hologram) {
+        boolean remove = this.holograms.remove(hologram);
         hologram.close();
-        return this.holograms.remove(hologram);
+        return remove;
     }
 
     public Set<Hologram> getHolograms() {
