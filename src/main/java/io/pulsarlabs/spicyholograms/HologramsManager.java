@@ -3,7 +3,7 @@ package io.pulsarlabs.spicyholograms;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.pulsarlabs.spicyholograms.impl.DynamicHologram;
 import io.pulsarlabs.spicyholograms.impl.StaticHologram;
-import net.kyori.adventure.text.Component;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
