@@ -4,7 +4,6 @@ main: io.pulsarlabs.spicyholograms.SpicyHolograms
 api-version: 1.18
 depend:
   - ProtocolLib
-  - PlaceholderAPI
 authors: [ saifsuleman ]
 website: https://github.com/saifsuleman
 loadbefore: [ polyscript ]

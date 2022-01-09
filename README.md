@@ -28,8 +28,8 @@ compileOnly("io.pulsarlabs:SpicyHolograms:1.0.0")
 
 ```java
 
-import io.pulsarlabs.spicyholograms.holograms.HologramsManager;
-import io.pulsarlabs.spicyholograms.holograms.impl.DynamicHologram;
+import io.pulsarlabs.spicyholograms.HologramsManager;
+import io.pulsarlabs.spicyholograms.impl.DynamicHologram;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.template.TemplateResolver;
 import org.bukkit.Bukkit;
@@ -39,8 +39,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.Arrays;
 
 public final class MyPlugin extends JavaPlugin {
+    private HologramsManager hologramsManager;
+    
+    @Override
     public void onEnable() {
-        HologramsManager hologramsManager = SpicyHolograms.getInstance().getHologramsManager();
+        this.hologramsManager = new HologramsManager(this);
 
         List<Component> lines = Arrays.asList(
                 MiniMessage.miniMessage().parse("<rainbow>My Hologram!"),
@@ -60,6 +63,11 @@ public final class MyPlugin extends JavaPlugin {
                     );
                 }
         );
+    }
+    
+    @Override
+    public void onDisable() {
+        this.hologramsManager.close();
     }
 }
 ```

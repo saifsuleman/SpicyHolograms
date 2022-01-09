@@ -1,4 +1,4 @@
-package io.pulsarlabs.spicyholograms.holograms;
+package io.pulsarlabs.spicyholograms;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
@@ -6,7 +6,6 @@ import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import com.comphenix.protocol.wrappers.WrappedWatchableObject;
 import io.pulsarlabs.spicyholograms.util.PacketUtil;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 
@@ -109,6 +108,6 @@ public class HologramLine {
     }
 
     private boolean isComponentBlank(Component component) {
-        return component.equals(MiniMessage.miniMessage().parse(""));
+        return component.equals(Component.text(""));
     }
 }

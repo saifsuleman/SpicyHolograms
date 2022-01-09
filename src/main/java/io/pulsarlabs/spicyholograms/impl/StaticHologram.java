@@ -1,8 +1,8 @@
-package io.pulsarlabs.spicyholograms.holograms.impl;
+package io.pulsarlabs.spicyholograms.impl;
 
 import com.comphenix.protocol.events.PacketContainer;
-import io.pulsarlabs.spicyholograms.holograms.Hologram;
-import io.pulsarlabs.spicyholograms.holograms.HologramLine;
+import io.pulsarlabs.spicyholograms.Hologram;
+import io.pulsarlabs.spicyholograms.HologramLine;
 import io.pulsarlabs.spicyholograms.util.PacketUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
@@ -17,7 +17,6 @@ public class StaticHologram extends Hologram {
     private final List<HologramLine> lines;
     private final double spacing;
     private Location location;
-    private final UUID uuid;
 
     public StaticHologram(Location location, List<Component> lines, double spacing) {
         this.location = location;
@@ -25,7 +24,6 @@ public class StaticHologram extends Hologram {
         this.lines = new ArrayList<>();
         this.hiding = ConcurrentHashMap.newKeySet();
         this.viewers = ConcurrentHashMap.newKeySet();
-        this.uuid = UUID.randomUUID();
         this.lines(lines);
     }
 
@@ -122,10 +120,5 @@ public class StaticHologram extends Hologram {
     @Override
     public Collection<Player> viewers() {
         return this.viewers;
-    }
-
-    @Override
-    public UUID getUUID() {
-        return this.uuid;
     }
 }

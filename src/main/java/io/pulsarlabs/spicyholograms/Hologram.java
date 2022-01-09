@@ -1,4 +1,4 @@
-package io.pulsarlabs.spicyholograms.holograms;
+package io.pulsarlabs.spicyholograms;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -32,6 +32,4 @@ public abstract class Hologram {
     public abstract Location location();
 
     public abstract Collection<Player> viewers();
-
-    public abstract UUID getUUID();
 }
