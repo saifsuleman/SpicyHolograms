@@ -13,6 +13,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -80,6 +81,18 @@ public class HologramsManager implements AutoCloseable {
 
     public Set<Hologram> getHolograms() {
         return holograms;
+    }
+
+    public boolean removeHologram(UUID uuid) {
+        Hologram h = null;
+        for (Hologram holo : this.holograms) {
+            if (holo.getUUID() == uuid) {
+                h = holo;
+                break;
+            }
+        }
+        if (h == null) return false;
+        return this.holograms.remove(h);
     }
 
     @Override

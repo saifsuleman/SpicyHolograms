@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
@@ -16,11 +17,13 @@ public class DynamicHologram extends Hologram {
 
     private Location location;
     private Function<Player, List<Component>> function;
+    private final UUID uuid;
 
     public DynamicHologram(Location location, Function<Player, List<Component>> function) {
         this.holograms = new ConcurrentHashMap<>();
         this.location = location;
         this.function = function;
+        this.uuid = UUID.randomUUID();
     }
 
     public void subscribe(Player player) {
@@ -70,5 +73,10 @@ public class DynamicHologram extends Hologram {
     @Override
     public Collection<Player> viewers() {
         return this.holograms.keySet();
+    }
+
+    @Override
+    public UUID getUUID() {
+        return this.uuid;
     }
 }

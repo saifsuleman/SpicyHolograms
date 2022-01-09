@@ -5,14 +5,10 @@ import io.pulsarlabs.spicyholograms.holograms.Hologram;
 import io.pulsarlabs.spicyholograms.holograms.HologramLine;
 import io.pulsarlabs.spicyholograms.util.PacketUtil;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class StaticHologram extends Hologram {
@@ -21,6 +17,7 @@ public class StaticHologram extends Hologram {
     private final List<HologramLine> lines;
     private final double spacing;
     private Location location;
+    private final UUID uuid;
 
     public StaticHologram(Location location, List<Component> lines, double spacing) {
         this.location = location;
@@ -28,7 +25,7 @@ public class StaticHologram extends Hologram {
         this.lines = new ArrayList<>();
         this.hiding = ConcurrentHashMap.newKeySet();
         this.viewers = ConcurrentHashMap.newKeySet();
-
+        this.uuid = UUID.randomUUID();
         this.lines(lines);
     }
 
@@ -125,5 +122,10 @@ public class StaticHologram extends Hologram {
     @Override
     public Collection<Player> viewers() {
         return this.viewers;
+    }
+
+    @Override
+    public UUID getUUID() {
+        return this.uuid;
     }
 }
