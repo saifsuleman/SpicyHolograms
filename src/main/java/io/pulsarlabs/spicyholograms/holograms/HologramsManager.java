@@ -1,13 +1,13 @@
 package io.pulsarlabs.spicyholograms.holograms;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import io.pulsarlabs.spicyholograms.SpicyHolograms;
 import io.pulsarlabs.spicyholograms.holograms.impl.DynamicHologram;
 import io.pulsarlabs.spicyholograms.holograms.impl.StaticHologram;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ public class HologramsManager implements AutoCloseable {
     private final BukkitRunnable runnable;
     private final ExecutorService executor;
 
-    public HologramsManager(SpicyHolograms plugin) {
+    public HologramsManager(Plugin plugin) {
         this.holograms = ConcurrentHashMap.newKeySet();
 
         this.executor = Executors.newFixedThreadPool(4, new ThreadFactoryBuilder().setNameFormat("SpicyHolograms Thread [#%d]").build());
