@@ -83,7 +83,7 @@ public class HologramsManager implements AutoCloseable {
         return holograms;
     }
 
-    public boolean removeHologram(UUID uuid) {
+    public Hologram getHologram(UUID uuid) {
         Hologram h = null;
         for (Hologram holo : this.holograms) {
             if (holo.getUUID().equals(uuid)) {
@@ -91,6 +91,11 @@ public class HologramsManager implements AutoCloseable {
                 break;
             }
         }
+        return h;
+    }
+
+    public boolean removeHologram(UUID uuid) {
+        Hologram h = getHologram(uuid);
         if (h == null) return false;
         return removeHologram(h);
     }
