@@ -86,13 +86,13 @@ public class HologramsManager implements AutoCloseable {
     public boolean removeHologram(UUID uuid) {
         Hologram h = null;
         for (Hologram holo : this.holograms) {
-            if (holo.getUUID() == uuid) {
+            if (holo.getUUID().equals(uuid)) {
                 h = holo;
                 break;
             }
         }
         if (h == null) return false;
-        return this.holograms.remove(h);
+        return removeHologram(h);
     }
 
     @Override
