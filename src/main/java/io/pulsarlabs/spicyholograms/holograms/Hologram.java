@@ -4,6 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
+import java.util.UUID;
 
 public abstract class Hologram {
     public void subscribeAll(Collection<Player> players) {
@@ -31,4 +32,6 @@ public abstract class Hologram {
     public abstract Location location();
 
     public abstract Collection<Player> viewers();
+
+    public abstract UUID getUUID();
 }

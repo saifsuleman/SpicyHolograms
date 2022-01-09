@@ -1,18 +1,19 @@
 package io.pulsarlabs.spicyholograms.holograms;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import io.pulsarlabs.spicyholograms.SpicyHolograms;
 import io.pulsarlabs.spicyholograms.holograms.impl.DynamicHologram;
 import io.pulsarlabs.spicyholograms.holograms.impl.StaticHologram;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,7 +24,7 @@ public class HologramsManager implements AutoCloseable {
     private final BukkitRunnable runnable;
     private final ExecutorService executor;
 
-    public HologramsManager(SpicyHolograms plugin) {
+    public HologramsManager(Plugin plugin) {
         this.holograms = ConcurrentHashMap.newKeySet();
 
         this.executor = Executors.newFixedThreadPool(4, new ThreadFactoryBuilder().setNameFormat("SpicyHolograms Thread [#%d]").build());
@@ -80,6 +81,23 @@ public class HologramsManager implements AutoCloseable {
 
     public Set<Hologram> getHolograms() {
         return holograms;
+    }
+
+    public Hologram getHologram(UUID uuid) {
+        Hologram h = null;
+        for (Hologram holo : this.holograms) {
+            if (holo.getUUID().equals(uuid)) {
+                h = holo;
+                break;
+            }
+        }
+        return h;
+    }
+
+    public boolean removeHologram(UUID uuid) {
+        Hologram h = getHologram(uuid);
+        if (h == null) return false;
+        return removeHologram(h);
     }
 
     @Override

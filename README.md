@@ -27,7 +27,7 @@ compileOnly("io.pulsarlabs:SpicyHolograms:1.0.0")
 ## API Usage
 
 ```java
-import io.pulsarlabs.spicyholograms.SpicyHolograms;
+
 import io.pulsarlabs.spicyholograms.holograms.HologramsManager;
 import io.pulsarlabs.spicyholograms.holograms.impl.DynamicHologram;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -35,7 +35,6 @@ import net.kyori.adventure.text.minimessage.template.TemplateResolver;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Arrays;
 
